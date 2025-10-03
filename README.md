@@ -10,4 +10,5 @@ Q: Can I contribute to this?
 A: Absolutely! So far, this is only a one-man project with help from AI (unfortanately) and I could absolutely use the help!
 
 Q: Is there a project map? 
-A: Yes, it'll be published when I can easily write it out.
+A: Yes, and [it can be viewed here.
+](https://github.com/Jackgame281/pixel-car-racer-web/blob/main/projectmap.md)

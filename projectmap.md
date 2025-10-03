@@ -2,6 +2,7 @@ Project Roadmap:
 
 10/1/25: 
 Proof of Concept, somewhat working
+
 10/3/25:
 reviewed by humans, scrolling bug will get fixed
 

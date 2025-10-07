@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Car Part Position Tester</title>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
+    <style>
+        #controls {
+            position: fixed;
+            right: 10px;
+            top: 10px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 10px;
+        }
+        .part-control {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="game"></div>
+    <div id="controls">
+        <div class="part-control">
+            <button id="prevCar">← Car</button>
+            <span id="carName">testingscionxb</span>
+            <button id="nextCar">Car →</button>
+        </div>
+        <div class="part-control">
+            <button id="prevRim">← Rim</button>
+            <span id="rimName">sp_adv_lip_310</span>
+            <button id="nextRim">Rim →</button>
+        </div>
+        <div class="part-control">
+            <label>Front Wheel X:</label>
+            <input type="range" id="wheelFrontX" min="-100" max="100" value="0">
+            <span id="wheelFrontXValue">0</span>
+        </div>
+        <div class="part-control">
+            <label>Front Wheel Y:</label>
+            <input type="range" id="wheelFrontY" min="-100" max="100" value="0">
+            <span id="wheelFrontYValue">0</span>
+        </div>
+        <div class="part-control">
+            <label>Rear Wheel X:</label>
+            <input type="range" id="wheelRearX" min="-100" max="100" value="0">
+            <span id="wheelRearXValue">0</span>
+        </div>
+        <div class="part-control">
+            <label>Rear Wheel Y:</label>
+            <input type="range" id="wheelRearY" min="-100" max="100" value="0">
+            <span id="wheelRearYValue">0</span>
+        </div>
+        <div>
+            <button id="copyPos">Copy Positions</button>
+        </div>
+        <div id="output"></div>
+    </div>
+
+    <script>
+        const config = {
+            type: Phaser.AUTO,
+            parent: 'game',
+            width: 800,
+            height: 600,
+            scene: {
+                preload: preload,
+                create: create,
+                update: update
+            }
+        };
+
+        const game = new Phaser.Game(config);
+        let car, wheelFront, wheelRear;
+
+        const carBodies = [
+            'testingscionxb',
+            'sp_car_81',
+            'sp_car_82'
+            // Add more car body names here
+        ];
+
+        const rims = [
+            'sp_adv_lip_310',
+            'sp_wheel_01',
+            'sp_wheel_02'
+            // Add more rim names here
+        ];
+
+        let currentCarIndex = 0;
+        let currentRimIndex = 0;
+
+        function preload() {
+            // Load all cars and rims
+            carBodies.forEach(car => {
+                this.load.image(`car_${car}`, `assets/cars/bodies/${car}.png`);
+            });
+            
+            rims.forEach(rim => {
+                this.load.image(`rim_${rim}`, `assets/cars/parts/rims/${rim}.png`);
+            });
+        }
+
+        function create() {
+            this.add.grid(400, 300, 800, 600, 32, 32, 0x00ff00, 0.2);
+            
+            car = this.add.sprite(400, 300, 'car');
+            wheelFront = this.add.sprite(400, 300, 'wheel').setScale(0.6);
+            wheelRear = this.add.sprite(400, 300, 'wheel').setScale(0.6);
+            
+            setupControls();
+            updateCarAndRims(this);
+        }
+
+        function update() {
+            const frontX = parseInt(document.getElementById('wheelFrontX').value);
+            const frontY = parseInt(document.getElementById('wheelFrontY').value);
+            const rearX = parseInt(document.getElementById('wheelRearX').value);
+            const rearY = parseInt(document.getElementById('wheelRearY').value);
+
+            wheelFront.x = car.x + frontX;
+            wheelFront.y = car.y + frontY;
+            wheelRear.x = car.x + rearX;
+            wheelRear.y = car.y + rearY;
+
+            document.getElementById('wheelFrontXValue').textContent = frontX;
+            document.getElementById('wheelFrontYValue').textContent = frontY;
+            document.getElementById('wheelRearXValue').textContent = rearX;
+            document.getElementById('wheelRearYValue').textContent = rearY;
+        }
+
+        function updateCarAndRims(scene) {
+            // Update car
+            car.setTexture(`car_${carBodies[currentCarIndex]}`);
+            document.getElementById('carName').textContent = carBodies[currentCarIndex];
+
+            // Update rims
+            const rimKey = `rim_${rims[currentRimIndex]}`;
+            wheelFront.setTexture(rimKey);
+            wheelRear.setTexture(rimKey);
+            document.getElementById('rimName').textContent = rims[currentRimIndex];
+        }
+
+        function setupControls() {
+            document.getElementById('copyPos').addEventListener('click', () => {
+                const positions = {
+                    frontWheel: {
+                        x: parseInt(document.getElementById('wheelFrontX').value),
+                        y: parseInt(document.getElementById('wheelFrontY').value)
+                    },
+                    rearWheel: {
+                        x: parseInt(document.getElementById('wheelRearX').value),
+                        y: parseInt(document.getElementById('wheelRearY').value)
+                    }
+                };
+                
+                const output = `wheelFront: {x: ${positions.frontWheel.x}, y: ${positions.frontWheel.y}}\nwheelRear: {x: ${positions.rearWheel.x}, y: ${positions.rearWheel.y}}`;
+                document.getElementById('output').innerText = output;
+                navigator.clipboard.writeText(output);
+            });
+
+            // Add new control handlers
+            document.getElementById('prevCar').addEventListener('click', () => {
+                currentCarIndex = (currentCarIndex - 1 + carBodies.length) % carBodies.length;
+                updateCarAndRims(game.scene.scenes[0]);
+            });
+
+            document.getElementById('nextCar').addEventListener('click', () => {
+                currentCarIndex = (currentCarIndex + 1) % carBodies.length;
+                updateCarAndRims(game.scene.scenes[0]);
+            });
+
+            document.getElementById('prevRim').addEventListener('click', () => {
+                currentRimIndex = (currentRimIndex - 1 + rims.length) % rims.length;
+                updateCarAndRims(game.scene.scenes[0]);
+            });
+
+            document.getElementById('nextRim').addEventListener('click', () => {
+                currentRimIndex = (currentRimIndex + 1) % rims.length;
+                updateCarAndRims(game.scene.scenes[0]);
+            });
+        }
+    </script>
+</body>
+</html>

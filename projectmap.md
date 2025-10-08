@@ -18,7 +18,7 @@ To be added/implemented in the future:
 * AI racers
 * export data, save progress or move between computers
 * crates (can house parts, spraypaint colors, or cash)
-* Music
+* ~~Music~~ (implemented 10/8/25)
 
 likely never happening:
 * online racing/connectivity

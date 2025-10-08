@@ -6,6 +6,9 @@ Proof of Concept, somewhat working
 10/3/25:
 reviewed by humans, scrolling bug will get fixed
 
+10/8/25:
+Scrolling bug was fixed, better steering and placeholder music has been added. A menu is in the works, and more car part support is being worked on in the `test_renders` page. 
+
 To be added/implemented in the future:
 
 * Pause menu

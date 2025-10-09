@@ -7,7 +7,7 @@ Proof of Concept, somewhat working
 reviewed by humans, scrolling bug will get fixed
 
 10/8/25:
-Scrolling bug was fixed, better steering and placeholder music has been added. A menu is in the works, and more car part support is being worked on in the `test_renders` page. 
+Scrolling bug was fixed, better steering and placeholder music has been added. A menu is in the works, and more car part support is being worked on in the `test_renders` page. More menus have been worked on, and there is now partial garage functionality, with some vehicle handling being taken care of. With more time, more items will be supported and the projectmap will be fufilled. garage backgrounds have been added, and custom ones are being made by me.  If i ever feel like it in the future, i may try to implement online functionality, but it'll be extremely hard, given that everyone's data is different and I'm currently not sure how I'd be able to parse it at this time. 
 
 To be added/implemented in the future:
 

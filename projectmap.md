@@ -9,6 +9,9 @@ reviewed by humans, scrolling bug will get fixed
 10/8/25:
 Scrolling bug was fixed, better steering and placeholder music has been added. A menu is in the works, and more car part support is being worked on in the `test_renders` page. More menus have been worked on, and there is now partial garage functionality, with some vehicle handling being taken care of. With more time, more items will be supported and the projectmap will be fufilled. garage backgrounds have been added, and custom ones are being made by me.  If i ever feel like it in the future, i may try to implement online functionality, but it'll be extremely hard, given that everyone's data is different and I'm currently not sure how I'd be able to parse it at this time. 
 
+10/13/25:
+I have been lazing around and have had little motivation to do anything for the past few days, so little progress had been made since thursday-friday. But, we do have a placeholder menubar and player data will be slowly worked on and will soon be figured out how to be manipulated by the game. I'm thinking of using browser storage to help hold it, plus features to help let people download it, if they need to move computers or need someone to troubleshoot the data. Milestones may be created soon in the Github repository that the source is in.
+
 To be added/implemented in the future:
 
 * Pause menu

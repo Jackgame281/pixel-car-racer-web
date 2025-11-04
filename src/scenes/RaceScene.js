@@ -5,21 +5,32 @@ export default class RaceScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.json('config', 'assets/config/config.json');
-        this.load.image('road', 'assets/tracks/mountain/background39_0.png');
-        this.load.image('car', 'assets/cars/bodies/testingscionxb.png');
+        this.load.json('config', './assets/config/config.json');
+        this.load.image('road', './assets/tracks/mountain/background39_0.png');
+        this.load.image('mountains', './assets/tracks/mountain/bg_mountain_3_0.png');    // Add this
+        this.load.image('clouds', './assets/tracks/mountain/bg_clouds_0.png');         // Add this
+        this.load.image('trees', './assets/tracks/mountain/bg_mountain_end_0.png');          // Add this
+        this.load.image('car', './assets/cars/bodies/testingscionxb.png');
         this.load.image('wheel_front', 'assets/cars/parts/rims/sp_adv_lip_310.png');
-        this.load.image('wheel_rear', 'assets/cars/parts/rims/sp_adv_lip_310.png');
-        this.load.image('spoiler', 'assets/cars/parts/spoiler_01.png');
-        this.load.image('f_bumper', 'assets/cars/parts/front_bumper_01.png');
-        this.load.image('r_bumper', 'assets/cars/parts/rear_bumper_01.png');
-        this.load.audio('engine', 'assets/audio/engine_test1.wav');
-        this.load.audio('bgm', 'assets/audio/external/abc_123a.mp3');
+        this.load.image('wheel_rear', './assets/cars/parts/rims/sp_adv_lip_310.png');
+        this.load.image('spoiler', './assets/cars/parts/spoiler_01.png');
+        this.load.image('f_bumper', './assets/cars/parts/front_bumper_01.png');
+        this.load.image('r_bumper', './assets/cars/parts/rear_bumper_01.png');
+        this.load.audio('engine', './assets/audio/engine_test1.wav');
+        this.load.audio('bgm', './assets/audio/external/abc_123a.mp3');
+        this.textures.get('*').setFilter(Phaser.Textures.NEAREST);
     }
 
     create() {
         this.loadConfig();
-        this.road = this.add.tileSprite(400, 300, 800, 600, 'road');
+        
+        // Create background layers (order matters - first is furthest back)
+        this.clouds = this.add.tileSprite(400, 300, 1024, 600, 'clouds');
+        this.clouds.tileScaleY = 1.2; // Placeholding size, will change later
+        this.mountains = this.add.tileSprite(400, 300, 1024, 600, 'mountains');
+        this.mountains.tileScaleY = 1.2;
+        this.trees = this.add.tileSprite(400, 300, 1024, 600, 'trees');
+        this.road = this.add.tileSprite(400, 300, 1024, 600, 'road');
 
         // Create vehicle container
         this.vehicle = this.add.container(400, 320);
@@ -42,7 +53,7 @@ export default class RaceScene extends Phaser.Scene {
         this.reloadKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
         this.handbrakeKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         this.engineSound = this.sound.add('engine', { loop: true });
-        this.engineSound.play();
+        // this.engineSound.play();
         const musicCfg = this.configData.audio.music;
         this.music = this.sound.add('bgm', { loop: true, volume: musicCfg.volume });
         this.music.play();
@@ -50,6 +61,31 @@ export default class RaceScene extends Phaser.Scene {
         this.enginePitch = this.configData.audio.engine.minPitch;
         this.engineVol = this.configData.audio.engine.minVolume;
         this.debugText = this.add.text(10, 10, 'Press R to reload config', { fontSize: 16, fill: '#fff' });
+
+        // Add back button
+        const backButton = this.add.text(50, 550, 'BACK TO MENU', {
+            fontSize: '20px',
+            fill: '#ffffff',
+            backgroundColor: '#333333',
+            padding: { x: 10, y: 5 }
+        })
+        .setInteractive()
+        .setScrollFactor(0); // Keep button fixed on screen
+
+        backButton.on('pointerover', () => {
+            backButton.setStyle({ fill: '#ffff00' });
+        });
+
+        backButton.on('pointerout', () => {
+            backButton.setStyle({ fill: '#ffffff' });
+        });
+
+        backButton.on('pointerdown', () => {
+            // Stop sounds before switching scenes
+            this.engineSound.stop();
+            this.music.stop();
+            this.scene.start('MenuScene');
+        });
     }
 
     update(time, delta) {
@@ -80,8 +116,12 @@ export default class RaceScene extends Phaser.Scene {
             const rate = 1 + (this.speed / maxSpeed) * 0.3;
             this.music.setRate(rate);
         }
-        // Change the background scrolling to move sideways
-        this.road.tilePositionX += this.speed * dt * 200;
+
+        // Update background parallax (different speeds for depth effect)
+        this.clouds.tilePositionX += this.speed * dt * 20;      // Slowest
+        this.mountains.tilePositionX += this.speed * dt * 50;   // Slow
+        this.trees.tilePositionX += this.speed * dt * 100;      // Medium
+        this.road.tilePositionX += this.speed * dt * 200;       // Fastest
 
         // Update wheel rotation based on speed
         const wheelRotationSpeed = this.speed * dt * 5;
